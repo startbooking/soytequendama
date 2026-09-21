@@ -1,10 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
-import { publicProviders } from '../lib/format';
+import { publicProviders, ordinaList } from '../lib/format';
 import proveedores from '../data/proveedores.json';
+import rutas from '../data/rutas.json';
+import actividades from '../data/actividades.json';
 import indice from '../data/indice.json';
 
 const visibles = publicProviders(proveedores);
+
+const rutasOrdenadas = [...rutas].sort((a, b) => a.ruta_id.localeCompare(b.ruta_id)).slice(0, 3);
+const actividadesTeaser = [...actividades]
+  .sort((a, b) => a.actividad_id.localeCompare(b.actividad_id))
+  .slice(0, 4);
 
 const CATEGORIAS_INFO: Record<string, { icono: string; color: string }> = {
   Hospedaje: { icono: '🏨', color: 'var(--verde-600)' },
@@ -78,6 +85,49 @@ const conMunicipio = (name: string) => visibles.filter((p) => p.municipio === na
         “Zona de influencia”: sitios emblemáticos cercanos a la provincia (Soacha), incluidos por ser
         parte del paisaje del Tequendama.
       </p>
+    </section>
+
+    <section class="seccion" aria-labelledby="titulo-rutas">
+      <div class="seccion__encabezado">
+        <h2 id="titulo-rutas">Rutas sugeridas</h2>
+        <a class="seccion__ver" href="/rutas/">Ver todas →</a>
+      </div>
+      <div class="teasers">
+        {rutasOrdenadas.map((ruta) => (
+          <a class="teaserr tarjeta" href={`/rutas/${ruta.ruta_id}/`}>
+            <span class="badge-sugerida">Ruta sugerida</span>
+            <h3>{ruta.nombre}</h3>
+            <p class="teaserr__meta">
+              {ruta.tipo} · {ruta.duracion_sugerida} · {ruta.n_paradas} paradas
+            </p>
+            <p class="teaserr__chips">
+              {ordinaList(ruta.municipios).map((m) => (
+                <span class="chip chip--municipio">{m}</span>
+              ))}
+            </p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="seccion" aria-labelledby="titulo-actividades">
+      <div class="seccion__encabezado">
+        <h2 id="titulo-actividades">Actividades sugeridas</h2>
+        <a class="seccion__ver" href="/actividades/">Ver todas →</a>
+      </div>
+      <div class="actividades">
+        {actividadesTeaser.map((a) => (
+          <a class="teasera tarjeta" href="/actividades/">
+            <span class="badge-sugerida">Actividad sugerida</span>
+            <h3>{a.nombre}</h3>
+            <p class="teasera__meta">
+              <span class="chip chip--municipio">{a.municipio}</span>
+              {a.tipo}
+            </p>
+            {a.precio && a.precio !== 'Por definir' && <p class="teasera__precio">{a.precio}</p>}
+          </a>
+        ))}
+      </div>
     </section>
   </div>
 </Base>
@@ -192,6 +242,92 @@ const conMunicipio = (name: string) => visibles.filter((p) => p.municipio === na
   .municipios__count {
     font-weight: 400;
     opacity: 0.75;
+  }
+
+  .seccion__encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .seccion__encabezado h2 {
+    margin: 0;
+  }
+
+  .seccion__ver {
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .teasers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .teaserr {
+    display: block;
+    padding: 1rem 1.1rem;
+    color: var(--texto);
+  }
+
+  .teaserr h3 {
+    margin: 0.55rem 0 0.3rem;
+    font-size: 1rem;
+  }
+
+  .teaserr__meta {
+    margin: 0 0 0.5rem;
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+  }
+
+  .teaserr__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+  }
+
+  .actividades {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .teasera {
+    display: flex;
+    flex-direction: column;
+    padding: 0.9rem 0.95rem;
+    color: var(--texto);
+    min-width: 0;
+  }
+
+  .teasera h3 {
+    font-size: 0.95rem;
+    margin: 0.5rem 0 0.45rem;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .teasera__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0 0 0.35rem;
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+  }
+
+  .teasera__precio {
+    margin: auto 0 0;
+    color: var(--verde-700);
+    font-weight: 700;
+    font-size: 0.82rem;
   }
 
   @media (min-width: 520px) {

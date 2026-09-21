@@ -1,0 +1,135 @@
+---
+import Base from '../../layouts/Base.astro';
+import { type Actividad, type Proveedor } from '../../lib/format';
+import actividades from '../../data/actividades.json';
+import proveedores from '../../data/proveedores.json';
+
+const ordenadas = [...(actividades as Actividad[])].sort((a, b) =>
+  a.actividad_id.localeCompare(b.actividad_id)
+);
+
+function proveedorDe(id: string | null): Proveedor | undefined {
+  return proveedores.find((p) => p.id === id);
+}
+
+const visible = (a: Actividad) => (proveedorDe(a.proveedor_id)?.estado ?? '') !== 'No publicar';
+---
+
+<Base
+  title="Actividades"
+  description="Actividades sugeridas en la provincia del Tequendama: senderismo, aviturismo, agroturismo, aventura y bienestar."
+>
+  <div class="contenedor">
+    <header class="actividades__cabecera">
+      <h1>Actividades sugeridas</h1>
+      <p class="texto-suave">
+        Experiencias para hacer durante tu visita. Están en guion editorial: confirma precios,
+        horarios y disponibilidad con el operador indicado.
+      </p>
+    </header>
+
+    <ul class="actividades__lista">
+      {
+        ordenadas.map((a) => {
+          const prov = proveedorDe(a.proveedor_id);
+          return (
+            <li class="actividad tarjeta">
+              <div class="actividad__cabecera">
+                <span class="badge-sugerida">Actividad sugerida</span>
+                <span class="actividad__tipo">{a.tipo}</span>
+              </div>
+              <h2>{a.nombre}</h2>
+              <p class="actividad__chips">
+                <span class="chip chip--municipio">{a.municipio}</span>
+                {a.duracion && a.duracion !== 'Por definir' && <span class="chip">{a.duracion}</span>}
+                {a.dificultad && a.dificultad !== 'Por definir' && (
+                  <span class="chip">Dificultad: {a.dificultad}</span>
+                )}
+              </p>
+              {a.precio && <p class="actividad__precio">{a.precio}</p>}
+              {visible(a) && prov && (
+                <p class="actividad__proveedor">
+                  Se hace en{' '}
+                  <a href={`/proveedores/${a.proveedor_id}/`}>{prov.nombre}</a>
+                </p>
+              )}
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <p class="texto-suave actividades__nota">
+      Estas actividades son un guion editorial en Borrador: los precios y la duración deben
+      confirmarse directamente con cada proveedor.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .actividades__cabecera {
+    padding: 1.4rem 0 0.8rem;
+  }
+
+  .actividades__cabecera p {
+    margin: 0.3rem 0 0;
+  }
+
+  .actividades__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .actividad {
+    padding: 1rem 1.1rem;
+  }
+
+  .actividad__cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .actividad__tipo {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--teal-600);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .actividad h2 {
+    font-size: 1.05rem;
+  }
+
+  .actividad__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0 0 0.45rem;
+  }
+
+  .actividad__precio {
+    margin: 0 0 0.3rem;
+    color: var(--verde-700);
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .actividad__proveedor {
+    margin: 0;
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+  }
+
+  .actividades__nota {
+    margin: 1.4rem 0 0;
+    font-size: 0.82rem;
+  }
+</style>

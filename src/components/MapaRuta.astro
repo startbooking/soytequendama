@@ -1,0 +1,131 @@
+---
+
+interface ParadaMapa {
+  nombre: string;
+  municipio: string;
+  lat: string | null;
+  lng: string | null;
+  tipo: string | null;
+  proveedorId: string | null;
+  proveedorVisible: boolean;
+  nota: string | null;
+}
+
+interface Props {
+  paradas: ParadaMapa[];
+  rutaNombre: string;
+}
+
+const { paradas, rutaNombre } = Astro.props;
+
+const puntos = paradas
+  .filter((p) => p.lat != null && p.lng != null && !Number.isNaN(Number(p.lat)) && !Number.isNaN(Number(p.lng)))
+  .map((p) => ({ x: Number(p.lat), y: Number(p.lng), ...p }));
+---
+
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
+<script is:inline src="/vendor/leaflet/leaflet.js"></script>
+
+<div class="mapa-ruta">
+  <div class="mapa-ruta__mapa" id="mapa-ruta" style="height: min(56vh, 480px)"></div>
+  <p class="mapa-ruta__nota">Mapa ilustrativo. Las distancias entre paradas se muestran en línea recta.</p>
+</div>
+
+<script is:inline define:vars={{ puntos, rutaNombre }}>
+  (() => {
+    const contenedor = document.getElementById('mapa-ruta');
+    if (!contenedor || typeof L === 'undefined') return;
+
+    const mapa = L.map(contenedor, { scrollWheelZoom: !window.matchMedia('(pointer: coarse)').matches });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contribuidores',
+    }).addTo(mapa);
+
+    const colores = {
+      Atractivo: '#3F7E86',
+      Comida: '#E8A03C',
+      Alojamiento: '#2F5D3C',
+      Operador: '#C96F4A',
+    };
+
+    const ruta = puntos.map((p) => [p.x, p.y]);
+    L.polyline(ruta, { color: '#2F5D3C', weight: 4, opacity: 0.75 }).addTo(mapa);
+
+    puntos.forEach((p, i) => {
+      const color = colores[p.tipo] || '#2F5D3C';
+      let popup = `<strong>${i + 1}. ${p.nombre}</strong><br><span>${p.municipio ?? ''}${p.tipo ? ` · ${p.tipo}` : ''}</span>`;
+      if (p.proveedorVisible && p.proveedorId) {
+        popup += `<br><a href="/proveedores/${p.proveedorId}/" data-navegar>Ver ficha</a>`;
+      }
+      const icono = L.divIcon({
+        html: `<span class="mar-num mar-num--${(p.tipo || 'atractivo').toLowerCase().replace(/\s+/g, '-')}" style="--marcar:${color}">${i + 1}</span>`,
+        className: 'mar-icono',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+      });
+      L.marker([p.x, p.y], { icon: icono }).bindPopup(popup).addTo(mapa);
+    });
+
+    if (ruta.length === 1) {
+      mapa.setView(ruta[0], 13);
+    } else if (ruta.length > 1) {
+      mapa.fitBounds(L.latLngBounds(ruta), { padding: [40, 40] });
+    } else {
+      mapa.setView([4.6, -74.3], 9);
+    }
+
+    contenedor.addEventListener('click', (ev) => {
+      const a = ev.target.closest('a[data-navegar]');
+      if (a) {
+        ev.preventDefault();
+        window.location.href = a.getAttribute('href');
+      }
+    });
+
+    setTimeout(() => mapa.invalidateSize(), 60);
+  })();
+</script>
+
+<style>
+  .mapa-ruta {
+    position: relative;
+    z-index: 0;
+    isolation: isolate;
+  }
+
+  .mapa-ruta__mapa {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    background: var(--verde-100);
+  }
+
+  .mapa-ruta__nota {
+    margin: 0.5rem 0 0;
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+  }
+
+  :global(.mar-icono) {
+    background: transparent;
+    border: 0;
+  }
+
+  :global(.mar-num) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--marcar);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px rgba(31, 42, 30, 0.3), 0 2px 6px rgba(31, 42, 30, 0.25);
+  }
+</style>

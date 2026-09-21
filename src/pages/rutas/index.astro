@@ -1,0 +1,116 @@
+---
+import Base from '../../layouts/Base.astro';
+import { ordinaList } from '../../lib/format';
+import rutas from '../../data/rutas.json';
+
+const ordenadas = [...rutas].sort((a, b) => a.ruta_id.localeCompare(b.ruta_id));
+---
+
+<Base
+  title="Rutas"
+  description="Rutas sugeridas por la provincia del Tequendama: naturaleza, aviturismo, cafeteros, pueblos de montaña y camping."
+>
+  <div class="contenedor">
+    <header class="rutas__cabecera">
+      <h1>Rutas sugeridas</h1>
+      <p class="texto-suave">
+        Itinerarios de 2 días que combinan hospedaje, comida y atractivos de la región. Están en
+        guion: las distancias entre paradas se muestran en línea recta.
+      </p>
+    </header>
+
+    <ul class="rutas__lista">
+      {
+        ordenadas.map((ruta) => {
+          const municipios = ordinaList(ruta.municipios);
+          return (
+            <li>
+              <a class="ruta tarjeta" href={`/rutas/${ruta.ruta_id}/`}>
+                <div class="ruta__cabecera">
+                  <span class="badge-sugerida">Ruta sugerida</span>
+                  <span class="ruta__km">{ruta.km_linea_recta ?? '—'} km</span>
+                </div>
+                <h2>{ruta.nombre}</h2>
+                <p class="ruta__meta">
+                  {ruta.tipo} · {ruta.duracion_sugerida} · Dificultad {ruta.dificultad}
+                </p>
+                <p class="ruta__chips">
+                  {municipios.map((m) => (
+                    <span class="chip chip--municipio">{m}</span>
+                  ))}
+                  <span class="chip">{ruta.n_paradas} paradas</span>
+                </p>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <p class="texto-suave rutas__nota">
+      Estas rutas son una guion editorial en Borrador: confirma horarios, tarifas y disponibilidad
+      con cada proveedor antes de salir. Las distancias son en línea recta.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .rutas__cabecera {
+    padding: 1.4rem 0 0.8rem;
+  }
+
+  .rutas__cabecera p {
+    margin: 0.3rem 0 0;
+  }
+
+  .rutas__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .ruta {
+    display: block;
+    padding: 1rem 1.1rem;
+    color: var(--texto);
+  }
+
+  .ruta__cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .ruta__km {
+    font-weight: 800;
+    color: var(--verde-700);
+    font-size: 0.9rem;
+  }
+
+  .ruta:hover h2 {
+    color: var(--verde-600);
+  }
+
+  .ruta__meta {
+    margin: 0 0 0.6rem;
+    color: var(--texto-suave);
+    font-size: 0.9rem;
+  }
+
+  .ruta__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+  }
+
+  .rutas__nota {
+    margin: 1.4rem 0 0;
+    font-size: 0.82rem;
+  }
+</style>

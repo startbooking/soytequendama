@@ -1,0 +1,262 @@
+---
+import Base from '../../layouts/Base.astro';
+import MapaRuta from '../../components/MapaRuta.astro';
+import { ordinaList, type Ruta, type Parada, type Proveedor } from '../../lib/format';
+import rutas from '../../data/rutas.json';
+import paradas from '../../data/paradas.json';
+import proveedores from '../../data/proveedores.json';
+
+export function getStaticPaths() {
+  return rutas.map((ruta) => ({ params: { id: ruta.ruta_id }, props: { ruta } }));
+}
+
+interface Props {
+  ruta: Ruta;
+}
+
+const { ruta } = Astro.props;
+const paradasRuta = (paradas as Parada[])
+  .filter((p) => p.ruta_id === ruta.ruta_id)
+  .sort((a, b) => Number(a.orden) - Number(b.orden));
+const municipios = ordinaList(ruta.municipios);
+
+function proveedorDe(id: string | null): Proveedor | undefined {
+  return proveedores.find((p) => p.id === id);
+}
+
+const nombreParada = (parada: Parada) => {
+  if (parada.nombre && parada.nombre !== parada.proveedor_id) return parada.nombre;
+  const prov = proveedorDe(parada.proveedor_id);
+  return prov?.nombre ?? parada.nombre ?? parada.proveedor_id;
+};
+
+const esVisible = (parada: Parada) => {
+  const prov = proveedorDe(parada.proveedor_id);
+  return (prov?.estado ?? '') !== 'No publicar';
+};
+
+const paradasMapa = paradasRuta.map((parada) => {
+  const prov = proveedorDe(parada.proveedor_id);
+  return {
+    nombre: nombreParada(parada),
+    municipio: parada.municipio ?? prov?.municipio ?? '',
+    lat: parada.latitud,
+    lng: parada.longitud,
+    tipo: parada.tipo_parada,
+    proveedorId: parada.proveedor_id,
+    proveedorVisible: esVisible(parada),
+    nota: parada.nota,
+  };
+});
+
+const totalKm = paradasRuta.reduce((sum, p) => sum + (Number(p.km_desde_anterior) || 0), 0);
+---
+
+<Base
+  title={ruta.nombre ?? ruta.ruta_id}
+  description={`${ruta.tipo ?? 'Ruta'} por ${municipios.join(', ') || 'la provincia del Tequendama'}. ${ruta.n_paradas} paradas.`}
+>
+  <div class="contenedor">
+    <a class="volver" href="/rutas/">← Volver a rutas</a>
+
+    <article class="ruta-detalle tarjeta">
+      <div class="ruta-detalle__cuerpo">
+        <div class="ruta-detalle__cabecera">
+          <span class="badge-sugerida">Ruta sugerida</span>
+          <span class="ruta-detalle__km">{ruta.km_linea_recta ?? '—'} km</span>
+        </div>
+
+        <h1>{ruta.nombre}</h1>
+        <p class="ruta-detalle__chips">
+          {ruta.tipo && <span class="chip">{ruta.tipo}</span>}
+          <span class="chip">Duración: {ruta.duracion_sugerida}</span>
+          <span class="chip">Dificultad: {ruta.dificultad}</span>
+          <span class="chip">{ruta.n_paradas} paradas</span>
+        </p>
+
+        {ruta.publico && <p class="ruta-detalle__publico">👥 {ruta.publico}</p>}
+        {ruta.descripcion && <p class="ruta-detalle__descripcion">{ruta.descripcion}</p>}
+
+        <p class="ruta-detalle__municipios">
+          {municipios.map((m) => (
+            <span class="chip chip--municipio">{m}</span>
+          ))}
+        </p>
+      </div>
+    </article>
+
+    <section class="ruta-detalle__mapa">
+      <h2>Recorrido</h2>
+      <MapaRuta paradas={paradasMapa} rutaNombre={ruta.nombre ?? ''} />
+    </section>
+
+    <section class="ruta-detalle__paradas">
+      <h2>Paradas</h2>
+      <ol class="paradas">
+        {
+          paradasRuta.map((parada, i) => {
+            const prov = proveedorDe(parada.proveedor_id);
+            return (
+              <li class="parada tarjeta">
+                <div class="parada__num">{i + 1}</div>
+                <div class="parada__cuerpo">
+                  <h3>
+                    {nombreParada(parada)}
+                    {esVisible(parada) && prov && (
+                      <span class="parada__ficha">
+                        <a href={`/proveedores/${parada.proveedor_id}/`}>Ver ficha</a>
+                      </span>
+                    )}
+                  </h3>
+                  <p class="parada__chips">
+                    {parada.tipo_parada && <span class="chip">{parada.tipo_parada}</span>}
+                    <span class="chip chip--municipio">{parada.municipio ?? prov?.municipio}</span>
+                  </p>
+                  <p class="parada__km">
+                    {Number(parada.km_desde_anterior) > 0
+                      ? `+${Number(parada.km_desde_anterior).toLocaleString('es-CO')} km desde la parada anterior (línea recta)`
+                      : i === 0
+                        ? 'Punto de partida'
+                        : 'Incluida en el recorrido'}
+                  </p>
+                  {parada.nota && <p class="parada__nota">{parada.nota}</p>}
+                </div>
+              </li>
+            );
+          })
+        }
+      </ol>
+      <p class="texto-suave ruta-detalle__nota">
+        Total aproximado: {totalKm.toLocaleString('es-CO')} km entre paradas en línea recta. Las
+        rutas son un guion editorial en Borrador: confirma horarios, tarifas y disponibilidad con
+        cada proveedor antes de salir.
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .volver {
+    display: inline-block;
+    margin: 0.9rem 0 0.7rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .ruta-detalle__cuerpo {
+    padding: 1.2rem 1.1rem 1.4rem;
+  }
+
+  .ruta-detalle__cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .ruta-detalle__km {
+    font-weight: 800;
+    color: var(--verde-700);
+  }
+
+  .ruta-detalle__chips,
+  .ruta-detalle__municipios,
+  .parada__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0 0 0.6rem;
+  }
+
+  .ruta-detalle__publico {
+    margin: 0 0 0.5rem;
+  }
+
+  .ruta-detalle__descripcion {
+    color: var(--texto-suave);
+    margin: 0 0 1rem;
+  }
+
+  .ruta-detalle__mapa {
+    margin-top: 1.6rem;
+  }
+
+  .ruta-detalle__mapa h2 {
+    font-size: 1.15rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .ruta-detalle__paradas {
+    margin-top: 1.8rem;
+  }
+
+  .ruta-detalle__paradas h2 {
+    font-size: 1.15rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .paradas {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .parada {
+    display: flex;
+    gap: 0.9rem;
+    padding: 0.9rem 1rem;
+  }
+
+  .parada__num {
+    flex-shrink: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--verde-600);
+    color: #fff;
+    font-weight: 800;
+  }
+
+  .parada__cuerpo {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .parada__cuerpo h3 {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 0.4rem;
+    font-size: 1rem;
+  }
+
+  .parada__ficha {
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .parada__km {
+    margin: 0;
+    color: var(--texto-suave);
+    font-size: 0.82rem;
+  }
+
+  .parada__nota {
+    margin: 0.4rem 0 0;
+    font-size: 0.85rem;
+    color: var(--texto);
+  }
+
+  .ruta-detalle__nota {
+    margin: 1.2rem 0 0;
+    font-size: 0.82rem;
+  }
+</style>
