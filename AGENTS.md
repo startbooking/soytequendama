@@ -36,16 +36,31 @@ Aplicación web de directorio turístico de la provincia del Tequendama (Cundina
 - Prefiere la solución más simple y mantenible.
 
 ## Comandos
-Tecnología: Astro (sitio estático) + Node. Los datos viven en data/*.csv (fuente de verdad) y se importan a src/data/*.json.
+Tecnología: Astro 5 (sitio estático) + Node ≥ 18.17 / 20.3 (o ≥ 22). Los datos viven en data/*.csv (fuente de verdad) y se importan a src/data/*.json.
 
 - Instalar dependencias: `npm install`
 - Importar datos (CSV → JSON, validando integridad): `npm run import:data`
 - Ejecutar en desarrollo: `npm run dev` (abre http://localhost:4321)
-- Verificar tipos: `npm run check`
-- Construir para producción: `npm run build`
-- Previsualizar el build: `npm run preview`
+  - Para probar desde el celular en la misma red: `npm run dev -- --host`
+- Verificar tipos y linter de Astro: `npm run check`
+- Construir para producción: `npm run build` (genera dist/, ~120 páginas HTML)
+- Previsualizar el build: `npm run preview` (o abrir dist/ con el servidor local)
+- Desplegar en producción (este computador, requiere sudo): `bash scripts/setup-domain.sh`
+  - Actualiza /etc/hosts, instala el vhost de Apache (`deploy/soytequenda.lan.conf`, DocumentRoot `dist/`) y hace relanzar Apache. El sitio queda en http://soytequenda.lan (alias soytequendama.lan).
+  - Tras un cambio en el código, rehaz el build y la página se actualiza sola en el vhost (Apache sirve `dist/`): `npm run build`
 
 Notas:
-- Tras actualizar un CSV, vuelve a ejecutar `npm run import:data` y luego `npm run build`.
-- No edites los archivos de `src/data/*.json` a mano: se regeneran con `import:data`.
-- No hay suite de pruebas automatizadas todavía; la verificación es `npm run check` + revisión manual en el navegador.
+- Tras actualizar un CSV: `npm run import:data` → `npm run build`. No edites `src/data/*.json` a mano.
+- No hay suite de pruebas automatizadas; la verificación es `npm run check` + revisión manual en el navegador.
+- Leaflet está vendored en `public/vendor/leaflet/` (sin CDN); los tiles de OpenStreetMap y las fuentes de Google requieren internet.
+- Assets estáticos (no requieren build): `public/favicon.svg`, `public/robots.txt`, `public/vendor/leaflet/`. `public/og.png` (imagen para redes) y `sitemap.xml` se generan/regeneran en el build.
+- En desarrollo (`npm run dev`), no se aplica el archivo `public/robots.txt` de forma automática; robots.txt solo importa en producción.
+
+### En tu computador
+Pasos para correr el proyecto desde cero en una máquina nueva:
+1. Clona el repo y entra: `git clone https://github.com/startbooking/soytequendama.git && cd soytequendama`
+2. Instala dependencias: `npm install`
+3. Importa los datos: `npm run import:data`
+4. Corre el servidor de desarrollo: `npm run dev` → abre http://localhost:4321
+5. Para producción local: `npm run build` y luego `npm run preview` (o sirve `dist/` con Apache/nginx).
+   - Si quieres el dominio `.lan`, ejecuta `bash scripts/setup-domain.sh` (pide sudo) y entra a http://soytequenda.lan.
