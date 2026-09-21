@@ -1,0 +1,153 @@
+---
+import { categorySlug, isZonaInfluencia, type Proveedor } from '../lib/format';
+
+interface Props {
+  proveedores: Proveedor[];
+  class?: string;
+  height?: string;
+}
+
+const { proveedores, class: className, height = 'min(72vh, 640px)' } = Astro.props;
+
+const markers = proveedores
+  .filter(
+    (p) =>
+      p.latitud != null &&
+      p.longitud != null &&
+      !Number.isNaN(Number(p.latitud)) &&
+      !Number.isNaN(Number(p.longitud))
+  )
+  .map((p) => ({
+    id: p.id,
+    nombre: p.nombre ?? p.id,
+    municipio: p.municipio ?? '',
+    zonaInfluencia: isZonaInfluencia(p),
+    lat: Number(p.latitud),
+    lng: Number(p.longitud),
+    categoria: categorySlug(p.categoria),
+  }));
+---
+
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
+<script is:inline src="/vendor/leaflet/leaflet.js"></script>
+
+<div class:list={['mapa-proveedores', className]}>
+  <div class="mapa-proveedores__mapa" id="mapa-proveedores" style={`height: ${height}`}></div>
+  <p class="mapa-proveedores__nota">Las coordenadas provienen de Google Maps y pueden desactualizarse.</p>
+</div>
+
+<script is:inline define:vars={{ markers }}>
+  (() => {
+    const contenedor = document.getElementById('mapa-proveedores');
+    if (!contenedor || typeof L === 'undefined') return;
+
+    const mapa = L.map(contenedor, { scrollWheelZoom: !window.matchMedia('(pointer: coarse)').matches });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contribuidores',
+    }).addTo(mapa);
+
+    const colores = {
+      hospedaje: '#2F5D3C',
+      restaurante: '#E8A03C',
+      atractivo: '#3F7E86',
+      agencia: '#C96F4A',
+    };
+
+    const grupo = L.layerGroup().addTo(mapa);
+    const todas = markers;
+
+    function crearMarcador(m, conPopup = true) {
+      const color = colores[m.categoria] || '#2F5D3C';
+      const marcador = L.circleMarker([m.lat, m.lng], {
+        radius: 10,
+        color: '#fff',
+        weight: 2,
+        fillColor: color,
+        fillOpacity: 0.9,
+      });
+      if (conPopup) {
+        marcador.bindPopup(
+          `<strong>${m.nombre}</strong><br><span>${m.municipio}${m.zonaInfluencia ? ' (zona de influencia)' : ''}</span><br><a href="/proveedores/${m.id}/" data-navegar>Ver ficha</a>`
+        );
+      }
+      return marcador;
+    }
+
+    function pintar(lista) {
+      grupo.clearLayers();
+      if (lista.length === 0) {
+        mapa.setView([4.6, -74.3], 9);
+        return;
+      }
+      lista.forEach((m) => grupo.addLayer(crearMarcador(m)));
+      if (lista.length === 1) {
+        mapa.setView([lista[0].lat, lista[0].lng], 13);
+      } else {
+        mapa.fitBounds(L.latLngBounds(lista.map((m) => [m.lat, m.lng])), { padding: [30, 30] });
+      }
+    }
+
+    pintar(todas);
+
+    // click en enlaces de popup dentro del propio SPA
+    contenedor.addEventListener('click', (ev) => {
+      const a = ev.target.closest('a[data-navegar]');
+      if (a) {
+        ev.preventDefault();
+        window.location.href = a.getAttribute('href');
+      }
+    });
+
+    // API para que otras páginas filtren los marcadores en vivo
+    window.mapaProveedores = {
+      filtrar(texto) {
+        const q = (texto || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+        const visibles = q
+          ? todas.filter(
+              (m) =>
+                m.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q) ||
+                m.municipio.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q)
+            )
+          : todas;
+        pintar(visibles);
+        return visibles.length;
+      },
+      total() {
+        return todas.length;
+      },
+      instancia() {
+        return mapa;
+      },
+    };
+
+    setTimeout(() => mapa.invalidateSize(), 60);
+  })();
+</script>
+
+<style>
+  .mapa-proveedores {
+    position: relative;
+    z-index: 0;
+    isolation: isolate;
+  }
+
+  .mapa-proveedores__mapa {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    background: var(--verde-100);
+  }
+
+  .mapa-proveedores :global(.leaflet-popup-content a) {
+    font-weight: 700;
+  }
+
+  .mapa-proveedores__nota {
+    margin: 0.5rem 0 0;
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+  }
+</style>

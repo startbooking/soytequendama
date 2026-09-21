@@ -1,0 +1,143 @@
+---
+import Base from '../layouts/Base.astro';
+import MapaProveedores from '../components/MapaProveedores.astro';
+import { publicProviders } from '../lib/format';
+import proveedores from '../data/proveedores.json';
+
+const visibles = publicProviders(proveedores);
+---
+
+<Base
+  title="Mapa"
+  description="Encuentra hospedajes, restaurantes, atractivos turísticos y operadores de la provincia del Tequendama en el mapa."
+>
+  <div class="contenedor contenedor--mapa">
+    <header class="mapa-page__cabecera">
+      <h1>Mapa de la región</h1>
+      <p class="texto-suave">
+        Ubica los {visibles.length} proveedores del directorio. Escribe un nombre o un municipio
+        para filtrar los marcadores.
+      </p>
+      <div class="mapa-page__barra">
+        <input
+          id="mapa-q"
+          class="campo"
+          type="search"
+          placeholder="Buscar por nombre o municipio…"
+          autocomplete="off"
+        />
+        <p id="mapa-conteo" class="mapa-page__conteo texto-suave"></p>
+      </div>
+    </header>
+
+    <MapaProveedores proveedores={visibles} />
+
+    <div class="mapa-page__leyenda">
+      <span class="leyenda__item"><i class="leyenda__punto leyenda__punto--hospedaje"></i>Hospedaje</span>
+      <span class="leyenda__item"><i class="leyenda__punto leyenda__punto--restaurante"></i>Restaurante</span>
+      <span class="leyenda__item"><i class="leyenda__punto leyenda__punto--atractivo"></i>Atractivo turístico</span>
+      <span class="leyenda__item"><i class="leyenda__punto leyenda__punto--agencia"></i>Agencia / Operador</span>
+    </div>
+  </div>
+</Base>
+
+<script is:inline>
+  (() => {
+    const input = document.getElementById('mapa-q');
+    const conteo = document.getElementById('mapa-conteo');
+    const api = () => window.mapaProveedores;
+
+    const actualizar = () => {
+      const mapa = api();
+      if (!mapa) return;
+      const n = mapa.filtrar(input.value);
+      conteo.textContent = n === mapa.total() ? `${n} proveedores en el mapa` : n === 1 ? '1 proveedor coincide' : `${n} proveedores coinciden`;
+    };
+
+    const esperar = () => {
+      if (api()) {
+        actualizar();
+      } else {
+        setTimeout(esperar, 80);
+      }
+    };
+    esperar();
+
+    input.addEventListener('input', () => {
+      if (api()) actualizar();
+    });
+  })();
+</script>
+
+<style>
+  .contenedor--mapa {
+    max-width: 980px;
+  }
+
+  .mapa-page__cabecera {
+    padding: 1.2rem 0 1rem;
+  }
+
+  .mapa-page__cabecera p {
+    margin: 0.3rem 0 0.9rem;
+  }
+
+  .mapa-page__barra {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .mapa-page__conteo {
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  .mapa-page__leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  .leyenda__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+  }
+
+  .leyenda__punto {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px rgba(31, 42, 30, 0.25);
+  }
+
+  .leyenda__punto--hospedaje {
+    background: #2f5d3c;
+  }
+  .leyenda__punto--restaurante {
+    background: #e8a03c;
+  }
+  .leyenda__punto--atractivo {
+    background: #3f7e86;
+  }
+  .leyenda__punto--agencia {
+    background: #c96f4a;
+  }
+
+  @media (min-width: 600px) {
+    .mapa-page__barra {
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .mapa-page__barra .campo {
+      max-width: 320px;
+    }
+  }
+</style>

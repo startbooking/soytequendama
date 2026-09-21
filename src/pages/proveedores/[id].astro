@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import MapaProveedores from '../../components/MapaProveedores.astro';
 import { publicProviders, genericImageUrl, categorySlug, whatsappLink, telLink, formatTelefono, isZonaInfluencia, categoriaPara, type Proveedor } from '../../lib/format';
 import proveedores from '../../data/proveedores.json';
 
@@ -111,6 +112,13 @@ function enlaceSitio(web: string): string {
             </div>
           )}
         </dl>
+
+        {tieneUbicacion && (
+          <section class="ficha__ubicacion">
+            <h2>Ubicación</h2>
+            <MapaProveedores proveedores={[proveedor]} class="ficha__minimapa" height="240px" />
+          </section>
+        )}
 
         <div class="acciones">
           {tel && (
@@ -249,6 +257,15 @@ function enlaceSitio(web: string): string {
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
+  }
+
+  .ficha__ubicacion {
+    margin-bottom: 1.2rem;
+  }
+
+  .ficha__ubicacion h2 {
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
   }
 
   .ficha__wa {
