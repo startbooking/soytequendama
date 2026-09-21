@@ -1,0 +1,95 @@
+{
+  "categorias": [
+    {
+      "name": "Hospedaje",
+      "subcategories": [
+        "Cabañas",
+        "Camping",
+        "Centro vacacional",
+        "Club / hotel",
+        "Finca turística",
+        "Glamping",
+        "Hacienda cafetera",
+        "Hospedaje campestre",
+        "Hotel",
+        "Hotel & piscina",
+        "Hotel & spa",
+        "Hotel boutique",
+        "Hotel campestre"
+      ]
+    },
+    {
+      "name": "Restaurante",
+      "subcategories": [
+        "Bar y restaurante",
+        "Café bar",
+        "Café y restaurante",
+        "Cocina de autor",
+        "Cocina gourmet",
+        "Comida típica",
+        "Frutería / brunch",
+        "Gastrobar",
+        "Hamburguesas / bar",
+        "Italiano",
+        "Parrilla / cerveza artesanal",
+        "Parrilla campestre",
+        "Parrilla y bar",
+        "Piqueteadero",
+        "Restaurante",
+        "Restaurante campestre"
+      ]
+    },
+    {
+      "name": "Atractivo turístico",
+      "subcategories": [
+        "Cascada",
+        "Cascada / caminata",
+        "Cascada / mirador",
+        "Ecoparque",
+        "Laguna / caminata",
+        "Mirador",
+        "Mirador / aventura",
+        "Parque",
+        "Parque / monumento",
+        "Parque de aventura",
+        "Parque natural",
+        "Parque temático",
+        "Piscinas medicinales",
+        "Pueblo / cultural",
+        "Sendero"
+      ]
+    },
+    {
+      "name": "Agencia / Operador",
+      "subcategories": [
+        "Agencia / alquiler de fincas",
+        "Agencia / eventos",
+        "Agencia / guianza",
+        "Agencia de viajes",
+        "Alquiler de fincas",
+        "Aventura / cuatrimotos",
+        "Ciclismo / turismo",
+        "Oficina de turismo",
+        "Operador de ecoturismo",
+        "Promotora de turismo"
+      ]
+    }
+  ],
+  "municipios": [
+    "Anapoima",
+    "Anolaima",
+    "Apulo",
+    "Cachipay",
+    "El Colegio",
+    "La Mesa",
+    "Quipile",
+    "San Antonio del Tequendama",
+    "Soacha",
+    "Tena",
+    "Viotá"
+  ],
+  "zonas": [
+    "Provincia del Tequendama",
+    "Zona de influencia"
+  ]
+}

@@ -1,0 +1,184 @@
+---
+import { isZonaInfluencia } from '../lib/format';
+import type { Proveedor } from '../lib/format';
+import ProveedorCard from './ProveedorCard.astro';
+
+interface Categoria {
+  name: string;
+  subcategories: string[];
+}
+
+interface Props {
+  proveedores: Proveedor[];
+  categorias: Categoria[];
+  municipios: string[];
+}
+
+const { proveedores, categorias, municipios } = Astro.props;
+---
+
+<section class="filtros tarjeta" aria-label="Filtros">
+  <div class="filtros__busqueda">
+    <span class="filtros__lupa" aria-hidden="true">🔎</span>
+    <input
+      id="f-q"
+      class="campo filtros__search"
+      type="search"
+      placeholder="Buscar por nombre, lugar, actividad…"
+      autocomplete="off"
+    />
+  </div>
+
+  <select id="f-categoria" class="campo" aria-label="Filtrar por categoría">
+    <option value="">Todas las categorías</option>
+    {categorias.map((c) => <option value={c.name}>{c.name}</option>)}
+  </select>
+
+  <select id="f-subcategoria" class="campo" aria-label="Filtrar por subcategoría">
+    <option value="">Todas las subcategorías</option>
+  </select>
+
+  <select id="f-municipio" class="campo" aria-label="Filtrar por municipio">
+    <option value="">Todos los municipios</option>
+    {municipios.map((m) => <option value={m}>{m}</option>)}
+  </select>
+
+  <p class="filtros__aviso texto-suave oculto" id="f-vacio">
+    No encontramos nada con esos filtros. Prueba quitar alguno.
+  </p>
+</section>
+
+<p class="resultado texto-suave" id="f-resultado">
+  {proveedores.length} {proveedores.length === 1 ? 'proveedor' : 'proveedores'}
+</p>
+
+<div class="lista" id="f-lista">
+  {proveedores.map((p) => (
+    <div
+      class="lista__item"
+      data-cat={p.categoria ?? ''}
+      data-sub={p.subcategoria ?? ''}
+      data-mun={p.municipio ?? ''}
+      data-nombre={((p.nombre ?? '') + ' ' + (p.direccion ?? '')).toLowerCase()}
+      data-influencia={isZonaInfluencia(p)}>
+      <ProveedorCard proveedor={p} />
+    </div>
+  ))}
+</div>
+
+<script define:vars={{ categorias }}>
+  const normalize = (s) =>
+    (s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  const paramsIniciales = new URLSearchParams(window.location.search);
+
+  const searchInput = document.getElementById('f-q');
+  const catSelect = document.getElementById('f-categoria');
+  const subSelect = document.getElementById('f-subcategoria');
+  const munSelect = document.getElementById('f-municipio');
+  const list = document.getElementById('f-lista');
+  const items = [...list.querySelectorAll('.lista__item')];
+  const resultado = document.getElementById('f-resultado');
+  const vacio = document.getElementById('f-vacio');
+
+  const subcategoriasPorCategoria = Object.fromEntries(
+    categorias.map((c) => [c.name, c.subcategories]),
+  );
+
+  function rellenarSubcategorias(categoria) {
+    const options = ['<option value="">Todas las subcategorías</option>'];
+    const subs = categoria ? subcategoriasPorCategoria[categoria] || [] : [];
+    subs.forEach((s) => options.push(`<option value="${s}">${s}</option>`));
+    subSelect.innerHTML = options.join('');
+  }
+
+  function aplicar() {
+    const q = normalize(searchInput.value);
+    const cat = catSelect.value;
+    const sub = subSelect.value;
+    const mun = munSelect.value;
+
+    let visibles = 0;
+    for (const item of items) {
+      const cumpleQ = !q || normalize(item.dataset.nombre).includes(q);
+      const cumpleCat = !cat || item.dataset.cat === cat;
+      const cumpleSub = !sub || item.dataset.sub === sub;
+      const cumpleMun = !mun || item.dataset.mun === mun;
+      const visible = cumpleQ && cumpleCat && cumpleSub && cumpleMun;
+      item.classList.toggle('oculto', !visible);
+      if (visible) visibles++;
+    }
+
+    resultado.textContent = `${visibles} ${visibles === 1 ? 'proveedor' : 'proveedores'}`;
+    vacio.classList.toggle('oculto', visibles !== 0);
+
+    const params = new URLSearchParams();
+    if (cat) params.set('categoria', cat);
+    if (sub) params.set('subcategoria', sub);
+    if (mun) params.set('municipio', mun);
+    if (searchInput.value.trim()) params.set('q', searchInput.value.trim());
+    history.replaceState(null, '', params.toString() ? `?${params.toString()}` : location.pathname);
+  }
+
+  catSelect.addEventListener('change', () => {
+    rellenarSubcategorias(catSelect.value);
+    subSelect.value = '';
+    aplicar();
+  });
+  [searchInput, subSelect, munSelect].forEach((el) => {
+    el.addEventListener(el === searchInput ? 'input' : 'change', aplicar);
+  });
+
+  rellenarSubcategorias(paramsIniciales.get('categoria') ?? '');
+  searchInput.value = paramsIniciales.get('q') ?? '';
+  catSelect.value = paramsIniciales.get('categoria') ?? '';
+  subSelect.value = paramsIniciales.get('subcategoria') ?? '';
+  munSelect.value = paramsIniciales.get('municipio') ?? '';
+  aplicar();
+</script>
+
+<style>
+  .filtros {
+    padding: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .filtros__busqueda {
+    position: relative;
+  }
+
+  .filtros__lupa {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  .filtros__search {
+    padding-left: 2.4rem;
+  }
+
+  .filtros__aviso {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .resultado {
+    margin: 1rem 0 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .lista__item.oculto {
+    display: none;
+  }
+</style>

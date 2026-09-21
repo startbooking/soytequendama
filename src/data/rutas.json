@@ -1,0 +1,80 @@
+[
+  {
+    "ruta_id": "RUT-01",
+    "nombre": "Cascadas y miradores de Cachipay y Tena",
+    "municipios": "Cachipay, Tena",
+    "tipo": "Naturaleza y caminata",
+    "duracion_sugerida": "2 días / 1 noche",
+    "dificultad": "Media",
+    "publico": "Parejas, amigos y familias con buena condición física",
+    "descripcion": "Mirador, café de la región, caminata al Salto de las Monjas y a la Cascada El Tambo, con almuerzo típico y noche en glamping.",
+    "n_paradas": "6",
+    "km_linea_recta": "22.8",
+    "estado": "Borrador"
+  },
+  {
+    "ruta_id": "RUT-02",
+    "nombre": "Del Salto del Tequendama al bosque de niebla",
+    "municipios": "Soacha, San Antonio del Tequendama",
+    "tipo": "Naturaleza y aviturismo",
+    "duracion_sugerida": "2 días / 1 noche",
+    "dificultad": "Baja a media",
+    "publico": "Familias, aficionados a las aves y fotógrafos",
+    "descripcion": "Recorrido por el ícono de la región, el bosque de niebla de Chicaque, la cascada de Los Tunos y el ecoparque Guandalay.",
+    "n_paradas": "5",
+    "km_linea_recta": "17.1",
+    "estado": "Borrador"
+  },
+  {
+    "ruta_id": "RUT-03",
+    "nombre": "Fin de semana de clima cálido en Anapoima",
+    "municipios": "Anapoima",
+    "tipo": "Descanso y aventura suave",
+    "duracion_sugerida": "2 días / 1 noche",
+    "dificultad": "Baja",
+    "publico": "Familias y grupos de amigos",
+    "descripcion": "Parque, sendero empedrado, piscinas medicinales y cuatrimoto, con restaurantes con vista al valle y hotel boutique.",
+    "n_paradas": "7",
+    "km_linea_recta": "6.6",
+    "estado": "Borrador"
+  },
+  {
+    "ruta_id": "RUT-04",
+    "nombre": "Café y aventura en Viotá",
+    "municipios": "Viotá",
+    "tipo": "Agroturismo y aventura",
+    "duracion_sugerida": "2 días / 1 noche",
+    "dificultad": "Baja",
+    "publico": "Parejas y amigos",
+    "descripcion": "Puente de cristal, almuerzo típico, tour de café en una hacienda centenaria y noche en finca vacacional.",
+    "n_paradas": "4",
+    "km_linea_recta": "12.6",
+    "estado": "Borrador"
+  },
+  {
+    "ruta_id": "RUT-05",
+    "nombre": "Pueblos de montaña: Anolaima y Quipile",
+    "municipios": "Anolaima, Quipile",
+    "tipo": "Cultura y agroturismo",
+    "duracion_sugerida": "2 días / 1 noche",
+    "dificultad": "Baja",
+    "publico": "Familias y viajeros tranquilos",
+    "descripcion": "Plazas y casco urbano de Anolaima, comida de piqueteadero y tour de café en Quipile, con noche en cabañas.",
+    "n_paradas": "6",
+    "km_linea_recta": "12.5",
+    "estado": "Borrador"
+  },
+  {
+    "ruta_id": "RUT-06",
+    "nombre": "Aventura y camping en La Mesa",
+    "municipios": "La Mesa",
+    "tipo": "Aventura y ecoturismo",
+    "duracion_sugerida": "2 días / 1 noche",
+    "dificultad": "Media",
+    "publico": "Amigos y familias con niños grandes",
+    "descripcion": "Desayuno típico, parque de aventura, aviturismo con camping en una reserva y ecoturismo comunitario.",
+    "n_paradas": "5",
+    "km_linea_recta": "12.9",
+    "estado": "Borrador"
+  }
+]

@@ -1,0 +1,210 @@
+---
+import Base from '../layouts/Base.astro';
+import { publicProviders } from '../lib/format';
+import proveedores from '../data/proveedores.json';
+import indice from '../data/indice.json';
+
+const visibles = publicProviders(proveedores);
+
+const CATEGORIAS_INFO: Record<string, { icono: string; color: string }> = {
+  Hospedaje: { icono: '🏨', color: 'var(--verde-600)' },
+  Restaurante: { icono: '🍽️', color: 'var(--ambar-500)' },
+  'Atractivo turístico': { icono: '🌄', color: 'var(--teal-600)' },
+  'Agencia / Operador': { icono: '🎒', color: 'var(--terracota-500)' },
+};
+
+const conCategoria = (name: string) => visibles.filter((p) => p.categoria === name).length;
+
+const conMunicipio = (name: string) => visibles.filter((p) => p.municipio === name).length;
+---
+
+<Base
+  title="Mi Región del Tequendama"
+  description="Guía turística de la provincia del Tequendama (Cundinamarca, Colombia): proveedores, rutas y actividades."
+>
+  <section class="hero">
+    <div class="contenedor">
+      <p class="hero__region">Provincia del Tequendama · Cundinamarca</p>
+      <h1 class="hero__titulo">Descubre tu próxima aventura</h1>
+      <p class="hero__subtitulo texto-suave">
+        Hospedaje, comida, naturaleza y cultura en Anapoima, La Mesa, Viotá y más municipios.
+      </p>
+
+      <form class="hero__buscar" action="/proveedores/" method="get">
+        <span class="hero__lupa" aria-hidden="true">🔎</span>
+        <input
+          class="campo hero__input"
+          type="search"
+          name="q"
+          placeholder="¿Qué estás buscando? Ej. glamping, café…"
+          aria-label="Buscar proveedores"
+        />
+        <button class="btn btn--primario" type="submit">Buscar</button>
+      </form>
+    </div>
+  </section>
+
+  <div class="contenedor">
+    <section class="seccion" aria-labelledby="titulo-categorias">
+      <h2 id="titulo-categorias">Explora por categoría</h2>
+      <div class="categorias">
+        {indice.categorias.map((c) => {
+          const info = CATEGORIAS_INFO[c.name];
+          const count = conCategoria(c.name);
+          return (
+            <a class="categoria" href={`/proveedores/?categoria=${encodeURIComponent(c.name)}`}>
+              <span class="categoria__icono" style={`background:${info.color}22; color:${info.color}`}>
+                {info.icono}
+              </span>
+              <span class="categoria__nombre">{c.name}</span>
+              <span class="categoria__contador texto-suave">{count}</span>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="seccion" aria-labelledby="titulo-municipios">
+      <h2 id="titulo-municipios">Por municipio</h2>
+      <div class="municipios">
+        {indice.municipios.map((m) => (
+          <a class="chip chip--municipio" href={`/proveedores/?municipio=${encodeURIComponent(m)}`}>
+            {m}
+            <span class="municipios__count">{conMunicipio(m)}</span>
+          </a>
+        ))}
+      </div>
+      <p class="texto-suave seccion__nota">
+        “Zona de influencia”: sitios emblemáticos cercanos a la provincia (Soacha), incluidos por ser
+        parte del paisaje del Tequendama.
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .hero {
+    background:
+      radial-gradient(1000px 500px at 85% -10%, rgba(232, 160, 60, 0.35), transparent 60%),
+      radial-gradient(800px 400px at 0% 110%, rgba(63, 126, 134, 0.28), transparent 55%),
+      var(--verde-100);
+    padding: 2.4rem 0 2.6rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .hero__region {
+    margin: 0 0 0.3rem;
+    color: var(--verde-700);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .hero__titulo {
+    font-size: 2.1rem;
+    margin: 0 0 0.5rem;
+    color: var(--verde-900);
+  }
+
+  .hero__subtitulo {
+    margin: 0 0 1.3rem;
+    font-size: 1.02rem;
+  }
+
+  .hero__buscar {
+    display: flex;
+    gap: 0.55rem;
+    align-items: stretch;
+  }
+
+  .hero__lupa {
+    display: none;
+  }
+
+  .hero__input {
+    flex: 1;
+  }
+
+  .seccion {
+    margin-bottom: 2rem;
+  }
+
+  .seccion__nota {
+    font-size: 0.85rem;
+    margin: 0.8rem 0 0;
+  }
+
+  .categorias {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .categoria {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 0.85rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .categoria:active {
+    transform: scale(0.985);
+  }
+
+  .categoria__icono {
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .categoria__nombre {
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.15;
+    color: var(--verde-900);
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .categoria__contador {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .municipios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .municipios__count {
+    font-weight: 400;
+    opacity: 0.75;
+  }
+
+  @media (min-width: 520px) {
+    .hero__buscar {
+      max-width: 480px;
+    }
+
+    .categorias {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .categoria__nombre {
+      display: block;
+    }
+  }
+</style>

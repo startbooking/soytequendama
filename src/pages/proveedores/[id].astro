@@ -1,0 +1,273 @@
+---
+import Base from '../../layouts/Base.astro';
+import { publicProviders, genericImageUrl, categorySlug, whatsappLink, telLink, formatTelefono, isZonaInfluencia, categoriaPara, type Proveedor } from '../../lib/format';
+import proveedores from '../../data/proveedores.json';
+
+export function getStaticPaths() {
+  return publicProviders(proveedores).map((p) => ({ params: { id: p.id }, props: { proveedor: p } }));
+}
+
+interface Props {
+  proveedor: Proveedor;
+}
+
+const { proveedor } = Astro.props;
+const categoria = categoriaPara(proveedor);
+const categoryClass = `cat-${categorySlug(categoria)}`;
+const foto = proveedor.foto_url || genericImageUrl(categoria);
+const waLink = whatsappLink(proveedor.telefono, proveedor.nombre);
+const tel = telLink(proveedor.telefono);
+const precioVisible = proveedor.precio_referencial;
+const nivelVisible = proveedor.nivel_precio;
+
+const mapLink =
+  proveedor.google_maps_url ||
+  (proveedor.latitud && proveedor.longitud
+    ? `https://www.google.com/maps/search/?api=1&query=${proveedor.latitud},${proveedor.longitud}`
+    : null);
+
+const tieneUbicacion = proveedor.latitud != null && proveedor.longitud != null;
+
+function enlaceSitio(web: string): string {
+  return /^https?:\/\//i.test(web) ? web : `//${web}`;
+}
+---
+
+<Base
+  title={proveedor.nombre ?? proveedor.id}
+  description={`${categoria} en ${proveedor.municipio ?? 'la provincia del Tequendama'}.`}
+>
+  <div class="contenedor">
+    <a class="volver" href="/proveedores/">← Volver a proveedores</a>
+
+    <article class="ficha tarjeta">
+      <div class="ficha__media">
+        <img src={foto} alt={proveedor.nombre ?? ''} />
+        <span class={`ficha__categoria ${categoryClass}`}>{categoria}</span>
+      </div>
+
+      <div class="ficha__cuerpo">
+        <h1>{proveedor.nombre}</h1>
+
+        <p class="ficha__chips">
+          {proveedor.subcategoria && <span class="chip">{proveedor.subcategoria}</span>}
+          {proveedor.municipio && (
+            <span class="chip chip--municipio">
+              {proveedor.municipio}
+              {isZonaInfluencia(proveedor) && proveedor.zona === 'Zona de influencia' && (
+                <span class="chip chip--influencia">Zona de influencia</span>
+              )}
+            </span>
+          )}
+          {tieneUbicacion && <span class="chip">📍 Coordenadas de Google Maps</span>}
+        </p>
+
+        {proveedor.descripcion && <p class="ficha__descripcion">{proveedor.descripcion}</p>}
+
+        <dl class="datos">
+          {proveedor.direccion && (
+            <div class="datos__fila">
+              <dt>Dirección</dt>
+              <dd>{proveedor.direccion}</dd>
+            </div>
+          )}
+          {proveedor.horario && (
+            <div class="datos__fila">
+              <dt>Horario</dt>
+              <dd>{proveedor.horario}</dd>
+            </div>
+          )}
+          {(nivelVisible || precioVisible) && (
+            <div class="datos__fila">
+              <dt>Precio</dt>
+              <dd>
+                {nivelVisible && <span class="datos__nivel">{nivelVisible}</span>}
+                {precioVisible && <span>{precioVisible}</span>}
+              </dd>
+            </div>
+          )}
+          {proveedor.telefono && (
+            <div class="datos__fila">
+              <dt>Teléfono</dt>
+              <dd class="datos__telefono">
+                <a href={`tel:+${proveedor.telefono.replace(/\D/g, '')}`}>{formatTelefono(proveedor.telefono)}</a>
+              </dd>
+            </div>
+          )}
+          {proveedor.sitio_web && (
+            <div class="datos__fila">
+              <dt>Web</dt>
+              <dd>
+                <a href={enlaceSitio(proveedor.sitio_web)} target="_blank" rel="noreferrer">
+                  {proveedor.sitio_web.replace(/^https?:\/\//i, '').replace(/\/+$/, '')}
+                </a>
+              </dd>
+            </div>
+          )}
+          {proveedor.rnt && (
+            <div class="datos__fila">
+              <dt>RNT</dt>
+              <dd>{proveedor.rnt}</dd>
+            </div>
+          )}
+        </dl>
+
+        <div class="acciones">
+          {tel && (
+            <a class="btn btn--primario btn--block" href={tel}>
+              📞 Llamar
+            </a>
+          )}
+          {waLink && (
+            <a class="btn btn--block ficha__wa" href={waLink} target="_blank" rel="noreferrer">
+              💬 WhatsApp
+            </a>
+          )}
+          {mapLink && (
+            <a class="btn btn--claro btn--block" href={mapLink} target="_blank" rel="noreferrer">
+              🗺️ Ver en Google Maps
+            </a>
+          )}
+        </div>
+
+        {tieneUbicacion && (
+          <p class="texto-suave ficha__nota">
+            La ubicación y los datos provienen de Google Maps y pueden desactualizarse. Confirma
+            horarios, precios y disponibilidad con el proveedor.
+          </p>
+        )}
+      </div>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .volver {
+    display: inline-block;
+    margin: 0.9rem 0 0.7rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .ficha {
+    border-radius: var(--radius-lg);
+  }
+
+  .ficha__media {
+    position: relative;
+    background: var(--verde-100);
+    aspect-ratio: 4 / 3;
+  }
+
+  .ficha__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ficha__categoria {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+  }
+
+  .ficha__categoria.cat-hospedaje {
+    background: var(--verde-600);
+  }
+
+  .ficha__categoria.cat-restaurante {
+    background: var(--ambar-500);
+    color: var(--verde-900);
+  }
+
+  .ficha__categoria.cat-atractivo {
+    background: var(--teal-600);
+  }
+
+  .ficha__categoria.cat-agencia {
+    background: var(--terracota-500);
+  }
+
+  .ficha__cuerpo {
+    padding: 1.2rem 1.1rem 1.4rem;
+  }
+
+  .ficha__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.2rem 0 0.9rem;
+  }
+
+  .ficha__descripcion {
+    color: var(--texto-suave);
+    margin: 0 0 1rem;
+  }
+
+  .datos {
+    margin: 0 0 1.2rem;
+  }
+
+  .datos__fila {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .datos__fila:last-child {
+    border-bottom: 0;
+  }
+
+  .datos__fila dt {
+    width: 5.2rem;
+    flex-shrink: 0;
+    color: var(--texto-suave);
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .datos__fila dd {
+    margin: 0;
+    flex: 1;
+    font-size: 0.95rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .datos__nivel {
+    font-weight: 700;
+    color: var(--verde-700);
+  }
+
+  .acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .ficha__wa {
+    background: #25d366;
+    color: #0b3d1f;
+  }
+
+  .ficha__nota {
+    margin: 1rem 0 0;
+    font-size: 0.82rem;
+  }
+
+  @media (min-width: 600px) {
+    .acciones {
+      flex-direction: row;
+    }
+
+    .acciones .btn {
+      flex: 1;
+    }
+  }
+</style>

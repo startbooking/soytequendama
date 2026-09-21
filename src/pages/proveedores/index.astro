@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProveedorList from '../../components/ProveedorList.astro';
+import { publicProviders } from '../../lib/format';
+import proveedores from '../../data/proveedores.json';
+import indice from '../../data/indice.json';
+
+const visibles = publicProviders(proveedores);
+---
+
+<Base
+  title="Proveedores"
+  description="Directorio de proveedores turísticos de la provincia del Tequendama: hospedaje, restaurantes, atractivos y agencias."
+>
+  <div class="contenedor">
+    <h1>Proveedores</h1>
+    <p class="texto-suave cabecera-pagina">
+      Hospedajes, restaurantes, atractivos y agencias de la provincia del Tequendama.
+    </p>
+
+    <ProveedorList
+      proveedores={visibles}
+      categorias={indice.categorias}
+      municipios={indice.municipios}
+    />
+  </div>
+</Base>
+
+<style>
+  .cabecera-pagina {
+    margin: 0 0 1.2rem;
+  }
+</style>

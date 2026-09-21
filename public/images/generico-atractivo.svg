@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400" role="img" aria-label="Atractivo turístico">
+  <rect width="600" height="400" rx="24" fill="#3F7E86"/>
+  <circle cx="520" cy="60" r="120" fill="#4E98A1" opacity="0.55"/>
+  <circle cx="80" cy="360" r="140" fill="#336A71" opacity="0.7"/>
+  <g font-size="110" text-anchor="middle" dominant-baseline="central">
+    <text x="300" y="205">🌄</text>
+  </g>
+  <text x="300" y="330" font-family="system-ui, sans-serif" font-size="40" font-weight="700" text-anchor="middle" fill="#FAF6EE" opacity="0.95">Atractivo turístico</text>
+</svg>

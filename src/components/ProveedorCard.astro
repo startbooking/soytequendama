@@ -1,0 +1,121 @@
+---
+import { genericImageUrl, categorySlug, isZonaInfluencia, categoriaPara, type Proveedor } from '../lib/format';
+
+interface Props {
+  proveedor: Proveedor;
+}
+
+const { proveedor } = Astro.props;
+const categoria = categoriaPara(proveedor);
+const categoryClass = `cat-${categorySlug(categoria)}`;
+const link = `/proveedores/${proveedor.id}/`;
+const foto = proveedor.foto_url || genericImageUrl(categoria);
+const tienePrecio = proveedor.precio_referencial && proveedor.precio_referencial !== 'Sin información';
+---
+
+<a class="card" href={link}>
+  <div class="card__media">
+    <img src={foto} alt="" loading="lazy" />
+    <span class={`card__categoria ${categoryClass}`}>{categoria}</span>
+  </div>
+  <div class="card__cuerpo">
+    <h3 class="card__nombre">{proveedor.nombre}</h3>
+    <p class="card__meta texto-suave">
+      <span class="card__sub">{proveedor.subcategoria}</span>
+      <span>·</span>
+      <span>{proveedor.municipio}</span>
+      {isZonaInfluencia(proveedor) && proveedor.zona === 'Zona de influencia' && (
+        <span class="chip chip--influencia">Zona de influencia</span>
+      )}
+    </p>
+    {tienePrecio && <p class="card__precio">{proveedor.precio_referencial}</p>}
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+
+  .card:active {
+    transform: scale(0.985);
+  }
+
+  .card__media {
+    position: relative;
+    background: var(--verde-100);
+    aspect-ratio: 4 / 3;
+  }
+
+  .card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card__categoria {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    background: rgba(31, 42, 30, 0.72);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    backdrop-filter: blur(3px);
+  }
+
+  .cat-hospedaje {
+    background: rgba(47, 93, 60, 0.85);
+  }
+
+  .cat-restaurante {
+    background: rgba(214, 138, 33, 0.9);
+  }
+
+  .cat-atractivo {
+    background: rgba(63, 126, 134, 0.9);
+  }
+
+  .cat-agencia {
+    background: rgba(201, 111, 74, 0.92);
+  }
+
+  .card__cuerpo {
+    padding: 0.9rem 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .card__nombre {
+    margin: 0;
+    font-size: 1.02rem;
+    color: var(--verde-900);
+  }
+
+  .card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  .card__precio {
+    margin: 0.15rem 0 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--verde-700);
+  }
+</style>

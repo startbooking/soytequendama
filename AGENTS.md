@@ -36,4 +36,16 @@ Aplicación web de directorio turístico de la provincia del Tequendama (Cundina
 - Prefiere la solución más simple y mantenible.
 
 ## Comandos
-(Cuando elijas la tecnología, completa esta sección: instalar dependencias, importar datos, ejecutar en desarrollo, ejecutar pruebas y construir.)
+Tecnología: Astro (sitio estático) + Node. Los datos viven en data/*.csv (fuente de verdad) y se importan a src/data/*.json.
+
+- Instalar dependencias: `npm install`
+- Importar datos (CSV → JSON, validando integridad): `npm run import:data`
+- Ejecutar en desarrollo: `npm run dev` (abre http://localhost:4321)
+- Verificar tipos: `npm run check`
+- Construir para producción: `npm run build`
+- Previsualizar el build: `npm run preview`
+
+Notas:
+- Tras actualizar un CSV, vuelve a ejecutar `npm run import:data` y luego `npm run build`.
+- No edites los archivos de `src/data/*.json` a mano: se regeneran con `import:data`.
+- No hay suite de pruebas automatizadas todavía; la verificación es `npm run check` + revisión manual en el navegador.
