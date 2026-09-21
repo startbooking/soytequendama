@@ -14,6 +14,15 @@ const pageTitle = title === siteTitle ? siteTitle : `${title} · ${siteTitle}`;
 function linkTo(path: string) {
   return new URL(path, Astro.url.origin).pathname;
 }
+
+const path = Astro.url.pathname;
+const NAV = [
+  { href: '/', label: 'Inicio', match: (p: string) => p === '/' },
+  { href: '/proveedores/', label: 'Directorio', match: (p: string) => p.startsWith('/proveedores') },
+  { href: '/rutas/', label: 'Rutas', match: (p: string) => p.startsWith('/rutas') },
+  { href: '/actividades/', label: 'Actividades', match: (p: string) => p.startsWith('/actividades') },
+  { href: '/mapa/', label: 'Mapa', match: (p: string) => p.startsWith('/mapa') },
+];
 ---
 
 <!doctype html>
@@ -22,8 +31,27 @@ function linkTo(path: string) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#2F5D3C" />
+    <meta name="theme-color" content="#234d3d" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site ?? 'http://soytequenda.lan').toString()} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mi Región del Tequendama" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:image" content="/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/og.png" />
     <title>{pageTitle}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Figtree:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,700&display=swap"
+      rel="stylesheet"
+    />
     <style is:global>
       :root {
         --verde-900: #1f2a1e;
@@ -31,24 +59,28 @@ function linkTo(path: string) {
         --verde-600: #2f5d3c;
         --verde-500: #3e7a4e;
         --verde-100: #e3ede2;
+        --bosque-900: #172b24;
+        --bosque-700: #234d3d;
         --arena-500: #c9b18a;
         --arena-200: #f0e7d6;
         --arena-100: #f7f1e4;
-        --arena-50: #faf6ee;
+        --arena-50: #f9f6f1;
+        --tarjeta: #fcfbf8;
         --ambar-700: #b57114;
         --ambar-500: #e8a03c;
         --teal-600: #3f7e86;
         --terracota-500: #c96f4a;
-        --texto: #2b332b;
-        --texto-suave: #5b665d;
+        --texto: #172b24;
+        --texto-suave: #63746d;
         --borde: #e4dccb;
-        --font: ui-rounded, "SF Pro Rounded", system-ui, -apple-system,
+        --font: "Figtree", "DM Sans", ui-sans-serif, system-ui, -apple-system,
           "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        --radius-lg: 20px;
-        --radius: 14px;
+        --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+        --radius-lg: 16px;
+        --radius: 12px;
         --radius-sm: 10px;
-        --shadow: 0 2px 10px rgba(31, 42, 30, 0.08);
-        --shadow-lg: 0 10px 30px rgba(31, 42, 30, 0.14);
+        --shadow: 0 2px 10px rgba(23, 43, 36, 0.08);
+        --shadow-lg: 0 10px 30px rgba(23, 43, 36, 0.14);
       }
 
       * {
@@ -83,14 +115,17 @@ function linkTo(path: string) {
       h3 {
         margin: 0 0 0.5rem;
         color: var(--verde-900);
-        line-height: 1.2;
+        line-height: 1.15;
+        font-family: var(--font-display);
+        font-weight: 600;
+        letter-spacing: -0.01em;
       }
 
       h1 {
-        font-size: 1.7rem;
+        font-size: 2rem;
       }
       h2 {
-        font-size: 1.3rem;
+        font-size: 1.45rem;
       }
       h3 {
         font-size: 1.05rem;
@@ -207,7 +242,7 @@ function linkTo(path: string) {
       }
 
       .tarjeta {
-        background: #fff;
+        background: var(--tarjeta);
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow);
         overflow: hidden;
@@ -222,11 +257,13 @@ function linkTo(path: string) {
           <span class="cabecera__nombre">Mi Región del Tequendama</span>
         </a>
         <nav class="cabecera__nav">
-          <a href={linkTo('/')}>Inicio</a>
-          <a href={linkTo('/proveedores/')}>Proveedores</a>
-          <a href={linkTo('/rutas/')}>Rutas</a>
-          <a href={linkTo('/actividades/')}>Actividades</a>
-          <a href={linkTo('/mapa/')}>Mapa</a>
+          {
+            NAV.map((item) => (
+              <a href={linkTo(item.href)} aria-current={item.match(path) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            ))
+          }
         </nav>
       </div>
     </header>
@@ -293,28 +330,38 @@ function linkTo(path: string) {
 
     <footer class="pie">
       <div class="contenedor">
+        <p class="pie__marca">Mi Región del Tequendama</p>
         <p class="pie__texto">
-          Directorio turístico de la provincia del Tequendama (Cundinamarca, Colombia).
+          Turismo local de la provincia del Tequendama · Cundinamarca (Colombia).
         </p>
         <p class="pie__texto">
-          Horarios, precios y datos se actualizan con la información que los proveedores
-          comparten en Google. Siempre confirma con el proveedor antes de ir.
+          Los datos se actualizan desde los archivos de la provincia (directorio, rutas y
+          actividades) y se cargan con la información que los proveedores comparten en Google.
+          Siempre confirma con el proveedor antes de ir.
         </p>
       </div>
     </footer>
 
     <style is:global>
       .pie {
-        background: var(--verde-700);
+        background: var(--bosque-900);
         color: var(--arena-100);
         margin-top: 3rem;
         padding: 1.6rem 0 2rem;
+      }
+
+      .pie__marca {
+        margin: 0 0 0.3rem;
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 1.1rem;
       }
 
       .pie__texto {
         margin: 0.3rem 0;
         font-size: 0.85rem;
         color: var(--arena-200);
+        line-height: 1.55;
       }
     </style>
   </body>

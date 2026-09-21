@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://tequendama.example.com',
+  site: 'http://soytequenda.lan',
   output: 'static',
   build: {
     format: 'directory',

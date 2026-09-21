@@ -14,10 +14,10 @@ const actividadesTeaser = [...actividades]
   .slice(0, 4);
 
 const CATEGORIAS_INFO: Record<string, { icono: string; color: string }> = {
-  Hospedaje: { icono: '🏨', color: 'var(--verde-600)' },
-  Restaurante: { icono: '🍽️', color: 'var(--ambar-500)' },
-  'Atractivo turístico': { icono: '🌄', color: 'var(--teal-600)' },
-  'Agencia / Operador': { icono: '🎒', color: 'var(--terracota-500)' },
+  Hospedaje: { icono: '🏨', color: '#2f5d3c' },
+  Restaurante: { icono: '🍽️', color: '#d68a21' },
+  'Atractivo turístico': { icono: '🌄', color: '#3f7e86' },
+  'Agencia / Operador': { icono: '🎒', color: '#c96f4a' },
 };
 
 const conCategoria = (name: string) => visibles.filter((p) => p.categoria === name).length;
@@ -33,7 +33,7 @@ const conMunicipio = (name: string) => visibles.filter((p) => p.municipio === na
     <div class="contenedor">
       <p class="hero__region">Provincia del Tequendama · Cundinamarca</p>
       <h1 class="hero__titulo">Descubre tu próxima aventura</h1>
-      <p class="hero__subtitulo texto-suave">
+      <p class="hero__subtitulo">
         Hospedaje, comida, naturaleza y cultura en Anapoima, La Mesa, Viotá y más municipios.
       </p>
 
@@ -54,21 +54,19 @@ const conMunicipio = (name: string) => visibles.filter((p) => p.municipio === na
   <div class="contenedor">
     <section class="seccion" aria-labelledby="titulo-categorias">
       <h2 id="titulo-categorias">Explora por categoría</h2>
-      <div class="categorias">
-        {indice.categorias.map((c) => {
-          const info = CATEGORIAS_INFO[c.name];
-          const count = conCategoria(c.name);
-          return (
-            <a class="categoria" href={`/proveedores/?categoria=${encodeURIComponent(c.name)}`}>
-              <span class="categoria__icono" style={`background:${info.color}22; color:${info.color}`}>
-                {info.icono}
-              </span>
-              <span class="categoria__nombre">{c.name}</span>
-              <span class="categoria__contador texto-suave">{count}</span>
-            </a>
-          );
-        })}
-      </div>
+<div class="categorias">
+          {indice.categorias.map((c) => {
+            const info = CATEGORIAS_INFO[c.name];
+            const count = conCategoria(c.name);
+            return (
+              <a class="categoria" style={`--cat:${info.color}`} href={`/proveedores/?categoria=${encodeURIComponent(c.name)}`}>
+                <span class="categoria__icono" aria-hidden="true">{info.icono}</span>
+                <span class="categoria__nombre">{c.name}</span>
+                <span class="categoria__contador">{count} proveedores</span>
+              </a>
+            );
+          })}
+        </div>
     </section>
 
     <section class="seccion" aria-labelledby="titulo-municipios">
@@ -135,37 +133,45 @@ const conMunicipio = (name: string) => visibles.filter((p) => p.municipio === na
 <style>
   .hero {
     background:
-      radial-gradient(1000px 500px at 85% -10%, rgba(232, 160, 60, 0.35), transparent 60%),
-      radial-gradient(800px 400px at 0% 110%, rgba(63, 126, 134, 0.28), transparent 55%),
-      var(--verde-100);
-    padding: 2.4rem 0 2.6rem;
+      radial-gradient(900px 420px at 88% -12%, rgba(232, 160, 60, 0.35), transparent 60%),
+      radial-gradient(760px 400px at -5% 115%, rgba(63, 126, 134, 0.42), transparent 55%),
+      linear-gradient(155deg, var(--bosque-700), var(--bosque-900) 70%);
+    padding: 2.6rem 0 3rem;
     margin-bottom: 1.6rem;
+    color: #fff;
   }
 
   .hero__region {
     margin: 0 0 0.3rem;
-    color: var(--verde-700);
+    color: var(--arena-200);
     font-weight: 700;
-    font-size: 0.85rem;
-    letter-spacing: 0.04em;
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
+    opacity: 0.9;
   }
 
   .hero__titulo {
-    font-size: 2.1rem;
+    font-size: 2.3rem;
     margin: 0 0 0.5rem;
-    color: var(--verde-900);
+    color: #fff;
+    font-family: var(--font-display);
   }
 
   .hero__subtitulo {
-    margin: 0 0 1.3rem;
-    font-size: 1.02rem;
+    margin: 0 0 1.4rem;
+    font-size: 1.04rem;
+    color: rgba(255, 255, 255, 0.86);
   }
 
   .hero__buscar {
     display: flex;
-    gap: 0.55rem;
+    gap: 0.4rem;
     align-items: stretch;
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.4rem 0.4rem 0.4rem 1rem;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
   }
 
   .hero__lupa {
@@ -174,6 +180,18 @@ const conMunicipio = (name: string) => visibles.filter((p) => p.municipio === na
 
   .hero__input {
     flex: 1;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: 0.7rem 0.4rem;
+  }
+
+  .hero__input:focus {
+    box-shadow: none;
+  }
+
+  .hero__buscar .btn {
+    border-radius: 999px;
   }
 
   .seccion {
@@ -192,15 +210,19 @@ const conMunicipio = (name: string) => visibles.filter((p) => p.municipio === na
   }
 
   .categoria {
+    position: relative;
     display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    background: #fff;
-    border-radius: var(--radius);
+    flex-direction: column;
+    gap: 0.4rem;
+    background:
+      radial-gradient(240px 160px at 100% 0%, rgba(255, 255, 255, 0.22), transparent 60%),
+      linear-gradient(150deg, var(--cat), var(--bosque-900) 85%);
+    color: #fff;
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
-    padding: 0.85rem;
+    padding: 1rem;
     text-decoration: none;
-    color: inherit;
+    min-width: 0;
   }
 
   .categoria:active {
@@ -208,29 +230,30 @@ const conMunicipio = (name: string) => visibles.filter((p) => p.municipio === na
   }
 
   .categoria__icono {
-    width: 2.6rem;
-    height: 2.6rem;
-    border-radius: var(--radius-sm);
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     flex-shrink: 0;
   }
 
   .categoria__nombre {
     font-weight: 700;
     font-size: 0.95rem;
-    line-height: 1.15;
-    color: var(--verde-900);
-    flex: 1;
+    line-height: 1.2;
+    color: #fff;
     min-width: 0;
     overflow-wrap: anywhere;
   }
 
   .categoria__contador {
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     font-weight: 600;
+    color: rgba(255, 255, 255, 0.82);
   }
 
   .municipios {
