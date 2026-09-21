@@ -1,0 +1,21 @@
+actividad_id,nombre,tipo,municipio,proveedor_id,proveedor,duracion,dificultad,precio,notas,estado
+ACT-01,Caminata al Salto de las Monjas,Senderismo,Cachipay,TEQ-089,Salto de las Monjas,Aprox. 2 h (reseñas),Media,Consultar con el proveedor,No apto para movilidad reducida; tramo final empinado.,Borrador
+ACT-02,Visita a la Cascada El Tambo,Senderismo,Tena,TEQ-097,Cascada El Tambo,Por definir,Por definir,Consultar con el proveedor,Acceso con guía comunitaria; mucha gente en fines de semana.,Borrador
+ACT-03,Mirador Cueva del Mohan,Mirador,Cachipay,TEQ-088,Cueva del Mohan,Por definir,Por definir,Consultar con el proveedor,Vista a varios municipios; señalización limitada.,Borrador
+ACT-04,Casa-museo y mirador del Salto del Tequendama,Cultural y paisaje,Soacha,TEQ-096,Salto del Tequendama,Por definir,Baja,Casa-museo ~$12.000 con audioguía (reseña),Casa histórica convertida en museo.,Borrador
+ACT-05,Senderismo en el bosque de niebla de Chicaque,Senderismo,Soacha,TEQ-095,Parque Natural Chicaque,Por definir,Por definir,Consultar con el proveedor,Hay cabañas para dormir.,Borrador
+ACT-06,Pesca de trucha y cascada en Los Tunos,Pesca y senderismo,San Antonio del Tequendama,TEQ-093,Los Tunos Natural Park,Por definir,Por definir,Consultar con el proveedor,Lleva ropa de cambio.,Borrador
+ACT-07,Aviturismo y contacto con animales en Guandalay,Aviturismo,San Antonio del Tequendama,TEQ-092,Ecoparque Ancestral Guandalay,Por definir,Por definir,Consultar con el proveedor,Ecoparque de naturaleza.,Borrador
+ACT-08,Puente de Cristal de Viotá,Aventura y mirador,Viotá,TEQ-100,La Granja de Filemón – Puente de Cristal,Por definir,Por definir,~$80.000 puente y atracciones (reseña),Confirmar tarifas y atención.,Borrador
+ACT-09,Tirolesas y retos en Macadamia,Aventura,La Mesa,TEQ-090,Macadamia Bosque Aventura,Por definir,Por definir,Consultar con el proveedor,Parque de aventura.,Borrador
+ACT-10,Recorrido en cuatrimoto en Anapoima,Aventura,Anapoima,TEQ-101,Adventure House,Por definir,Por definir,Consultar con el proveedor,Reseña reporta una cancelación; confirmar reserva.,Borrador
+ACT-11,Baños y piscinas medicinales,Bienestar,Anapoima,TEQ-082,El Rancho de Fecu Piscinas Medicinales,Por definir,Baja,Consultar con el proveedor,Piscina y baños de barro.,Borrador
+ACT-12,Caminata por el Camino Real de Anapoima,Senderismo,Anapoima,TEQ-081,Camino Real de Anapoima,Por definir,Media,Consultar con el proveedor,Sendero empedrado; lleva buen calzado.,Borrador
+ACT-13,Tour de café en la Hacienda Ceylán,Agroturismo,Viotá,TEQ-053,Hacienda Cafetera Ceylán,Por definir,Baja,Consultar con el proveedor,Hacienda de más de 100 años.,Borrador
+ACT-14,Tour de café en la Finca El Sinaí,Agroturismo,Quipile,TEQ-035,Finca Agroturística El Sinaí,Por definir,Baja,Consultar con el proveedor,Pocas reseñas; verificar.,Borrador
+ACT-15,Ecoturismo comunitario con Nación Panche,Ecoturismo,La Mesa,TEQ-109,Nación Panche Travel,Por definir,Por definir,Consultar con el proveedor,"Cascadas, senderos y santuario de abejas.",Borrador
+ACT-16,Aviturismo y camping en Altos de la Reserva,Aviturismo y camping,La Mesa,TEQ-034,Zona de Camping – Altos de la Reserva,Por definir,Por definir,Consultar con el proveedor,La vía es difícil tras lluvias.,Borrador
+ACT-17,Ciclismo por Anolaima,Ciclismo,Anolaima,TEQ-106,Pedaleemos Juntos,Por definir,Por definir,Consultar con el proveedor,Sin reseñas; verificar la oferta real.,Borrador
+ACT-18,Paseo a caballo en la montaña de Viotá,Cabalgata,Viotá,TEQ-051,Glamping El Mirador de la Montaña,Por definir,Por definir,Consultar con el proveedor,Según reseñas; verificar disponibilidad.,Borrador
+ACT-19,Camping en el Camino Real de Tena,Camping,Tena,TEQ-045,Finca El Palmar (camping),Por definir,Por definir,Consultar con el proveedor,Comida típica y asados en el lugar.,Borrador
+ACT-20,Terapias de barro y cascadas en Paraíso Terrenal,Bienestar,La Mesa,TEQ-025,Finca Hotel Paraíso Terrenal,Por definir,Baja,Consultar con el proveedor,Caminata a cascadas cercanas.,Borrador

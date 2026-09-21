@@ -1,0 +1,34 @@
+ruta_id,orden,proveedor_id,nombre,tipo_parada,municipio,latitud,longitud,km_desde_anterior,nota
+RUT-01,1,TEQ-088,Cueva del Mohan,Atractivo,Cachipay,4.7274147,-74.4728452,,Mirador con vista a varios municipios; señalización limitada.
+RUT-01,2,TEQ-068,"La Estación, Café Bar",Comida,Cachipay,4.7310096,-74.43708,4,Abre de martes a domingo; lunes cerrado.
+RUT-01,3,TEQ-089,Salto de las Monjas,Atractivo,Cachipay,4.6902124,-74.4404344,4.6,Caminata de unas 2 h con tramo final empinado.
+RUT-01,4,TEQ-097,Cascada El Tambo,Atractivo,Tena,4.6647086,-74.3759283,7.7,Acceso con guía comunitaria.
+RUT-01,5,TEQ-075,Restaurante El Rancho de Jairo,Comida,Tena,4.6741042,-74.3736191,1.1,Abre todos los días 7:00 a 22:00.
+RUT-01,6,TEQ-044,Entre Rocas Glamping Tena,Alojamiento,Tena,4.630657,-74.395248,5.4,Confirmar reserva.
+RUT-02,1,TEQ-096,Salto del Tequendama,Atractivo,Soacha,4.5748595,-74.2933816,,Casa-museo con entrada aparte.
+RUT-02,2,TEQ-095,Parque Natural Chicaque,Atractivo,Soacha,4.6063438,-74.3047537,3.7,Abre 8:00 a 16:00; hay cabañas para dormir.
+RUT-02,3,TEQ-093,Los Tunos Natural Park,Atractivo,San Antonio del Tequendama,4.5668792,-74.3182186,4.6,"Senderos, cascada y pesca de trucha; lleva ropa de cambio."
+RUT-02,4,TEQ-092,Ecoparque Ancestral Guandalay,Atractivo,San Antonio del Tequendama,4.6098513,-74.3645248,7,Aviturismo y contacto con animales.
+RUT-02,5,TEQ-040,Entre Mangos Glamping,Alojamiento,San Antonio del Tequendama,4.6251935,-74.3604979,1.8,Solo opera de jueves a domingo.
+RUT-03,1,TEQ-083,Parque de la Bienvenida,Atractivo,Anapoima,4.5557455,-74.5306321,,Mejor a primera hora.
+RUT-03,2,TEQ-059,Bruno – Restaurante & Café,Comida,Anapoima,4.5494313,-74.5352694,0.9,Ofrece menú del día.
+RUT-03,3,TEQ-081,Camino Real de Anapoima,Atractivo,Anapoima,4.5473677,-74.5365108,0.3,Lleva buen calzado.
+RUT-03,4,TEQ-082,El Rancho de Fecu Piscinas Medicinales,Atractivo,Anapoima,4.5448779,-74.536265,0.3,Abre 9:00 a 17:00.
+RUT-03,5,TEQ-101,Adventure House,Operador,Anapoima,4.5555621,-74.5305622,1.3,Recorridos en cuatrimoto; confirmar reserva.
+RUT-03,6,TEQ-060,Il Tramonto Mirador Oculto,Comida,Anapoima,4.5487767,-74.5338383,0.8,Cierra los martes.
+RUT-03,7,TEQ-005,La Masia Hotel Boutique,Alojamiento,Anapoima,4.5753515,-74.5293597,3,"Alojamiento apartado, con piscina."
+RUT-04,1,TEQ-100,La Granja de Filemón – Puente de Cristal,Atractivo,Viotá,4.4357936,-74.4607019,,Confirmar tarifas y atención.
+RUT-04,2,TEQ-080,Restaurante El Caqueteño,Comida,Viotá,4.4385539,-74.5221066,6.8,Abre todos los días; horno de piedra.
+RUT-04,3,TEQ-053,Hacienda Cafetera Ceylán,Alojamiento,Viotá,4.4455274,-74.4778629,5,Tour de café.
+RUT-04,4,TEQ-049,Finca Vacacional Agua Viva,Alojamiento,Viotá,4.4381505,-74.4770043,0.8,Vía destapada.
+RUT-05,1,TEQ-085,Parque Principal de Anolaima,Atractivo,Anolaima,4.7617957,-74.4651463,,Acceso libre.
+RUT-05,2,TEQ-084,Anolaima – Pueblo Panche,Atractivo,Anolaima,4.7603269,-74.4634165,0.3,Fiesta de Corpus Christi según reseñas.
+RUT-05,3,TEQ-064,Restaurante Piqueteadero Maria's,Comida,Anolaima,4.7580944,-74.4616898,0.3,Cerrado lunes a miércoles.
+RUT-05,4,TEQ-091,Parque Principal de Quipile,Atractivo,Quipile,4.7439353,-74.5336192,8.1,Acceso libre.
+RUT-05,5,TEQ-035,Finca Agroturística El Sinaí,Alojamiento,Quipile,4.7363591,-74.5546609,2.5,Tour de café; pocas reseñas.
+RUT-05,6,TEQ-036,Paraíso de la Montaña,Alojamiento,Quipile,4.7484813,-74.5548073,1.3,Cabañas con restaurante.
+RUT-06,1,TEQ-073,Restaurante Típico Piedras Vivas El Arriero,Comida,La Mesa,4.6297924,-74.4619166,,Abre desde las 7:00.
+RUT-06,2,TEQ-090,Macadamia Bosque Aventura,Atractivo,La Mesa,4.6450008,-74.4488814,2.2,Tirolesas y retos; abre 9:00 a 17:00.
+RUT-06,3,TEQ-034,Zona de Camping – Altos de la Reserva,Alojamiento,La Mesa,4.656631,-74.4167735,3.8,La vía es difícil tras lluvias.
+RUT-06,4,TEQ-109,Nación Panche Travel,Operador,La Mesa,4.6974314,-74.4302109,4.8,"Cascadas, senderos y santuario de abejas."
+RUT-06,5,TEQ-032,La Julita Glamping,Alojamiento,La Mesa,4.6989619,-74.4110201,2.1,Alternativa de glamping.
