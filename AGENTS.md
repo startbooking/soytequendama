@@ -57,7 +57,7 @@ Notas:
 - Tras actualizar un CSV: `npm run import:data` → `npm run build`. No edites `src/data/*.json` a mano.
 - No hay suite de pruebas automatizadas; la verificación es `npm run check` + revisión manual en el navegador.
 - Leaflet está vendored en `public/vendor/leaflet/` (sin CDN); los tiles de OpenStreetMap y las fuentes de Google requieren internet.
-- Assets estáticos (no requieren build): `public/favicon.svg`, `public/robots.txt`, `public/vendor/leaflet/`. `public/og.png` (imagen para redes) y `sitemap.xml` se generan/regeneran en el build.
+- Assets estáticos (no requieren build): `public/favicon.svg`, `public/robots.txt`, `public/vendor/leaflet/`, `public/vendor/sha256.min.js` (SHA-256 para el login de `/admin/` en contexto sin `crypto.subtle`). `public/og.png` (imagen para redes) y `sitemap.xml` se generan/regeneran en el build.
 - En desarrollo (`npm run dev`), no se aplica el archivo `public/robots.txt` de forma automática; robots.txt solo importa en producción.
 
 ### En tu computador
