@@ -130,6 +130,17 @@ CREATE TABLE IF NOT EXISTS actividades (
   KEY idx_actividades_proveedor (proveedor_id),
   CONSTRAINT fk_actividades_proveedor FOREIGN KEY (proveedor_id) REFERENCES proveedores (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS usuarios (
+  id INT NOT NULL AUTO_INCREMENT,
+  nombre VARCHAR(100) NOT NULL,
+  email VARCHAR(190) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  rol ENUM('super-admin','admin','turista') NOT NULL DEFAULT 'turista',
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_usuarios_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 `);
 
 sql.push('SET FOREIGN_KEY_CHECKS=0;');
@@ -159,7 +170,7 @@ for (const r of rutas) {
 
 for (const s of paradas) {
   sql.push(
-    `INSERT INTO paradas (ruta_id, ord, proveedor_id, nombre, tipo_parada, municipio, latitud, longitud, km_desde_anterior, nota) VALUES (${q(s.ruta_id)}, ${int(s.orden)}, ${q(s.proveedor_id ?? null)}, ${q(s.nombre ?? null)}, ${q(s.tipo_parada ?? null)}, ${q(s.municipio ?? null)}, ${f(s.latitud)}, ${f(s.longitud)}, ${f(s.km_desde_anterior)}, ${q(s.nota ?? null)});`
+    `INSERT INTO paradas (ruta_id, orden, proveedor_id, nombre, tipo_parada, municipio, latitud, longitud, km_desde_anterior, nota) VALUES (${q(s.ruta_id)}, ${int(s.orden)}, ${q(s.proveedor_id ?? null)}, ${q(s.nombre ?? null)}, ${q(s.tipo_parada ?? null)}, ${q(s.municipio ?? null)}, ${f(s.latitud)}, ${f(s.longitud)}, ${f(s.km_desde_anterior)}, ${q(s.nota ?? null)});`
   );
 }
 
@@ -185,7 +196,7 @@ const port = process.env.DB_PORT || '3306';
 const bind = process.env.DB_BIND || false; // optional --default-character-set
 
 if (host && user) {
-  const args = ['--host=' + host, '--port=' + port, '--user=' + user, '--database=' + DB_NAME];
+  const args = ['--host=' + host, '--port=' + port, '--user=' + user];
   if (bind) args.push('--default-character-set=utf8mb4');
   const run = spawnSync('mysql', args, {
     input: salida,

@@ -43,6 +43,11 @@ Tecnología: Astro 5 (sitio estático) + Node ≥ 18.17 / 20.3 (o ≥ 22). Los d
 - Migrar los datos importados a una base MySQL (`scripts/migrate-mysql.mjs`):
   - Genera `migracion.sql` (esquema + datos, tablas truncadas antes de cargar) en la raíz del repo.
   - Con credenciales en `.env` (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, opcional `DB_NAME`) y el CLI `mysql` instalado, además la aplica directo. Copia `.env.example` a `.env` para ver las variables.
+  - Crea `mi_region_tequendama` con tablas `proveedores`, `rutas`, `paradas`, `actividades` y `usuarios` (roles `super-admin`/`admin`/`turista`).
+  - Crear/actualizar un usuario (`scripts/crear-usuario.php`, usa `password_hash` de PHP): `npm run db:usuario` (usa `SUPER_ADMIN_EMAIL`/`SUPER_ADMIN_PASSWORD` del `.env`) u opciones `--email= --password= --nombre= --rol=`.
+- API PHP + Medoo en `api/` (servida por Apache en `/api` vía el vhost; `composer` instalado, vendor versionado):
+  - `GET /api/proveedores` (`?categoria=&municipio=&subcategoria=&zona=`, excluye "No publicar"), `GET /api/proveedores/{id}`, `GET /api/rutas`, `GET /api/rutas/{ruta_id}/paradas`, `GET /api/actividades`, `POST /api/usuarios/login` (`{"email","password"}` → `{usuario:{id,nombre,email,rol}}`), `GET /api` (índice).
+  - Probar sin Apache: `php -S 127.0.0.1:8787 api/index.php`.
 - Panel de administración (`/admin/`): login por contraseña. Configura `ADMIN_PASSWORD` en `.env` (solo su hash SHA-256 se incluye en el build); sin password el panel avisa que no está configurado.
 - Ejecutar en desarrollo: `npm run dev` (abre http://localhost:4321)
   - Para probar desde el celular en la misma red: `npm run dev -- --host`
@@ -51,6 +56,7 @@ Tecnología: Astro 5 (sitio estático) + Node ≥ 18.17 / 20.3 (o ≥ 22). Los d
 - Previsualizar el build: `npm run preview` (o abrir dist/ con el servidor local)
 - Desplegar en producción (este computador, requiere sudo): `bash scripts/setup-domain.sh`
   - Actualiza /etc/hosts, instala el vhost de Apache (`deploy/soytequenda.lan.conf`, DocumentRoot `dist/`) y hace relanzar Apache. El sitio queda en http://soytequenda.lan (alias soytequendama.lan).
+  - El vhost además expone la API en `/api` (Alias a `api/` con `FallbackResource` → `api/index.php`).
   - Tras un cambio en el código, rehaz el build y la página se actualiza sola en el vhost (Apache sirve `dist/`): `npm run build`
 
 Notas:

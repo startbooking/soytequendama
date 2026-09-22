@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "import:data": "node scripts/import-data.mjs",
     "migrate:mysql": "node scripts/migrate-mysql.mjs",
+    "db:usuario": "php scripts/crear-usuario.php",
     "check": "astro check"
   },
   "dependencies": {
