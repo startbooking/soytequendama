@@ -1,0 +1,160 @@
+---
+import { createHash } from 'node:crypto';
+import Base from '../layouts/Base.astro';
+
+const clave = import.meta.env.ADMIN_PASSWORD ?? '';
+const hashEsperado = clave ? createHash('sha256').update(clave).digest('hex') : '';
+const configurada = Boolean(hashEsperado);
+---
+
+<Base
+  title="Administración"
+  description="Acceso de administración para la gestión de la app Mi Región del Tequendama."
+>
+  <section class="admin">
+    <div class="contenedor admin__ancho">
+      <h1>Administración</h1>
+      <p class="texto-suave">
+        Gestión de la información del directorio turístico. Los cambios de datos se hacen en
+        <code>data/*.csv</code> y se aplican con <code>npm run import:data</code>.
+      </p>
+
+      <div class="tarjeta admin__cartel" id="admin-login">
+        <h2>Ingreso</h2>
+        <p class="texto-suave" id="admin-aviso">
+          {configurada
+            ? 'Escribe la contraseña de administración para entrar.'
+            : 'No hay contraseña configurada. Crea un archivo .env con ADMIN_PASSWORD y reconstruye el sitio.'}
+        </p>
+        {configurada && (
+          <form id="form-admin" novalidate>
+            <input
+              class="campo"
+              type="password"
+              id="admin-clave"
+              autocomplete="current-password"
+              placeholder="Contraseña"
+              aria-label="Contraseña de administración"
+            />
+            <button class="btn btn--primario" type="submit">Entrar</button>
+          </form>
+        )}
+        <p class="admin__error oculto" id="admin-error" role="alert">
+          Contraseña incorrecta.
+        </p>
+      </div>
+
+      <div class="tarjeta admin__panel oculto" id="admin-panel">
+        <h2>Panel de administración</h2>
+        <p class="texto-suave">Módulos (en preparación):</p>
+        <ul class="admin__modulos">
+          <li>Gestión de proveedores</li>
+          <li>Gestión de rutas y paradas</li>
+          <li>Gestión de actividades</li>
+          <li>Importación de datos: <code>npm run import:data</code></li>
+          <li>Migración a MySQL: <code>npm run migrate:mysql</code></li>
+        </ul>
+        <button class="btn btn--claro" id="admin-salir" type="button">Cerrar sesión</button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script is:inline src="/vendor/sha256.min.js"></script>
+<script define:vars={{ hashEsperado }}>
+  const form = document.querySelector('#form-admin');
+  const login = document.querySelector('#admin-login');
+  const panel = document.querySelector('#admin-panel');
+  const error = document.querySelector('#admin-error');
+  const clave = document.querySelector('#admin-clave');
+  const salir = document.querySelector('#admin-salir');
+
+  async function sha256Hex(texto) {
+    if (crypto.subtle) {
+      const dig = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
+      return Array.from(new Uint8Array(dig))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+    return (window.sha256(texto) || '').toLowerCase();
+  }
+
+  function abrirPanel() {
+    login?.classList.add('oculto');
+    panel?.classList.remove('oculto');
+    error?.classList.add('oculto');
+  }
+
+  if (sessionStorage.getItem('admin-sesion') === '1') {
+    abrirPanel();
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const valor = clave?.value ?? '';
+    if (!valor || !hashEsperado) return;
+    const ok = (await sha256Hex(valor)) === hashEsperado;
+    if (ok) {
+      sessionStorage.setItem('admin-sesion', '1');
+      if (clave) clave.value = '';
+      abrirPanel();
+    } else {
+      error?.classList.remove('oculto');
+    }
+  });
+
+  salir?.addEventListener('click', () => {
+    sessionStorage.removeItem('admin-sesion');
+    panel?.classList.add('oculto');
+    login?.classList.remove('oculto');
+  });
+
+  salir?.addEventListener('click', () => {
+    sessionStorage.removeItem('admin-sesion');
+    panel?.classList.add('oculto');
+    login?.classList.remove('oculto');
+  });
+</script>
+
+<style>
+  .admin {
+    padding: 1.2rem 0;
+  }
+
+  .admin__ancho {
+    max-width: 34rem;
+  }
+
+  .admin__cartel,
+  .admin__panel {
+    padding: 1.2rem 1.3rem;
+    margin-top: 1rem;
+  }
+
+  .admin__cartel form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-top: 0.8rem;
+  }
+
+  .admin__error {
+    margin: 0.6rem 0 0;
+    color: #9c2b2b;
+    font-weight: 600;
+  }
+
+  .admin__modulos {
+    margin: 0.4rem 0 1rem;
+    padding-left: 1.1rem;
+    line-height: 1.7;
+    color: var(--texto-suave);
+  }
+
+  .admin code {
+    background: var(--arena-100);
+    border-radius: 4px;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.85em;
+  }
+</style>

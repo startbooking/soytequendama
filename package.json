@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "import:data": "node scripts/import-data.mjs",
+    "migrate:mysql": "node scripts/migrate-mysql.mjs",
     "check": "astro check"
   },
   "dependencies": {
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@types/node": "^24.0.0",
     "csv-parse": "^6.1.0",
     "typescript": "^5.9.3"
   }

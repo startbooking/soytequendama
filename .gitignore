@@ -3,5 +3,6 @@ dist/
 .astro/
 .env
 .env.local
+migracion.sql
 .DS_Store
 .gstack/

@@ -40,6 +40,10 @@ Tecnología: Astro 5 (sitio estático) + Node ≥ 18.17 / 20.3 (o ≥ 22). Los d
 
 - Instalar dependencias: `npm install`
 - Importar datos (CSV → JSON, validando integridad): `npm run import:data`
+- Migrar los datos importados a una base MySQL (`scripts/migrate-mysql.mjs`):
+  - Genera `migracion.sql` (esquema + datos, tablas truncadas antes de cargar) en la raíz del repo.
+  - Con credenciales en `.env` (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, opcional `DB_NAME`) y el CLI `mysql` instalado, además la aplica directo. Copia `.env.example` a `.env` para ver las variables.
+- Panel de administración (`/admin/`): login por contraseña. Configura `ADMIN_PASSWORD` en `.env` (solo su hash SHA-256 se incluye en el build); sin password el panel avisa que no está configurado.
 - Ejecutar en desarrollo: `npm run dev` (abre http://localhost:4321)
   - Para probar desde el celular en la misma red: `npm run dev -- --host`
 - Verificar tipos y linter de Astro: `npm run check`

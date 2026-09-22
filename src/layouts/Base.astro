@@ -253,8 +253,11 @@ const NAV = [
     <header class="cabecera">
       <div class="contenedor cabecera__inner">
         <a class="cabecera__marca" href={linkTo('/')}>
-          <span class="cabecera__logo">🌄</span>
-          <span class="cabecera__nombre">Mi Región del Tequendama</span>
+          <img class="cabecera__logo" src="/favicon.svg" width="40" height="40" alt="" />
+          <span class="cabecera__texto">
+            <span class="cabecera__linea1">Mi Región del</span>
+            <span class="cabecera__linea2">Tequendama</span>
+          </span>
         </a>
         <nav class="cabecera__nav">
           {
@@ -264,6 +267,7 @@ const NAV = [
               </a>
             ))
           }
+          <a class="cabecera__admin" href="/admin/">Administración</a>
         </nav>
       </div>
     </header>
@@ -291,23 +295,49 @@ const NAV = [
       .cabecera__marca {
         display: flex;
         align-items: center;
-        gap: 0.45rem;
+        gap: 0.5rem;
         color: var(--verde-700);
         font-weight: 800;
-        font-size: 1.02rem;
-        line-height: 1.1;
         min-width: 0;
-        overflow-wrap: anywhere;
       }
 
       .cabecera__logo {
-        font-size: 1.4rem;
+        width: 2.1rem;
+        height: 2.1rem;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+
+      .cabecera__texto {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.05;
+        min-width: 0;
+      }
+
+      .cabecera__linea1 {
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--verde-700);
+        white-space: nowrap;
+      }
+
+      .cabecera__linea2 {
+        font-size: 1.16rem;
+        font-weight: 800;
+        line-height: 1.15;
+        font-family: var(--font-display);
+        letter-spacing: -0.01em;
+        white-space: nowrap;
       }
 
       .cabecera__nav {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.6rem;
+        align-items: center;
+        gap: 0.35rem;
         margin-left: auto;
       }
 
@@ -321,6 +351,16 @@ const NAV = [
       .cabecera__nav a[aria-current="page"] {
         color: var(--verde-700);
         background: var(--verde-100);
+      }
+
+      .cabecera__nav .cabecera__admin {
+        margin-left: 0.35rem;
+        font-weight: 700;
+        color: var(--verde-700);
+        border: 1px solid var(--verde-600);
+        border-radius: 999px;
+        padding: 0.4rem 0.8rem;
+        white-space: nowrap;
       }
     </style>
 
